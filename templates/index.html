@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="HTML respresentation of web scraping and data storage in mongoDB">
+  <meta name="author" content="Leeza Sergeeva">
+
+  <title>MARS TODAY</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
+  <!--  <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" type="text/css" href="/css/heroic-features.css">
+
+<!--  <link href="../static/css/heroic-features.css" rel="stylesheet">  -->
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">MARS TODAY</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+        <!-- Left side Header -->
+
+<!--      <div class="col-md-8">
+            <h4 class="card-title">Featured Mars Image
+                <a href={{mars_data.featured_image_url}}>Featured Mars Image</a>
+            </h4>
+            <img class="img-fluid" src={{mars_data.featured_image_url}} alt="featured_mars_image"></a>
+        </div>
+-->  
+        <!-- Jumbotron Header -->
+        <header class="jumbotron my-4">
+            <h1 class="display-3">MARS TODAY: NEWS </h1>
+            <h2> {{mars_data.news_title}} </h2>
+            <p class="lead">{{mars_data.news_paragraph}}</p>
+            <a href="/scrape" class="btn btn-primary btn-lg">Get New Data</a>
+        </header>
+    </div>
+
+    <!-- Page Features -->
+    <div class="row text-center">
+
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <a href="{{mars_data.featured_image_url}}"><img class="card-img-top" src={{mars_data.featured_image_url}} alt="featured_mars_image"></a>
+            <div class="card-body">
+                <h4 class="card-title">
+                <a href="#">Featured Mars Image</a>
+                </h4>
+            </div>
+            <div class="card-footer">
+                    <a href={{mars_data.featured_image_url}} class="btn btn-primary">See Full Image!</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title">
+                <a href="https://twitter.com/marswxreport?lang=en">Current Weather On Mars</a>
+                </h4>
+                {{ mars_data.mars_weather }}
+                <br>
+                <br>
+                <h4 class="card-title">
+                    <a href="https://space-facts.com/mars/">Mars Facts</a>
+                    </h4>
+                      <p align="text-center">{{ mars_data.mars_facts | safe }}</p>
+            </div>
+        </div>
+    </div>
+
+  </div>
+
+  <!-- Page Content Hemispheres-->
+  <div class="container">
+
+      <!-- Page Heading -->
+      <h1 class="my-4">Mars Hemispheres</h1>
+
+      <!-- Project One -->
+      <div class="row">
+
+
+{% for hemisphere in hemisphere_image_urls %}
+{% endfor %}
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100"> 
+          <img class="card-img-top" src={{ mars_data.hemisphere_image_urls[0].img_url}} alt="first_mars_hemisphere">
+          <div class="card-body">
+            <h4 class="card-title">{{ mars_data.hemisphere_image_urls[0].title }}</h4>
+            
+          </div> 
+        </div>
+    </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src={{ mars_data.hemisphere_image_urls[1].img_url}} alt="second_mars_hemisphere">
+          <div class="card-body">
+            <h4 class="card-title">{{ mars_data.hemisphere_image_urls[1].title }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src={{ mars_data.hemisphere_image_urls[2].img_url}} alt="third_mars_hemisphere">
+          <div class="card-body">
+            <h4 class="card-title">{{ mars_data.hemisphere_image_urls[2].title }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src={{ mars_data.hemisphere_image_urls[3].img_url}} alt="fourth_mars_hemisphere">
+          <div class="card-body">
+            <h4 class="card-title">{{ mars_data.hemisphere_image_urls[3].title }}</h4>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+    <!-- /.row -->
+  
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright Leeza Sergeeva 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script type = "text/javascript" 
+  src = "{{ url_for('static', filename = '/vendor/jquery/jquery.min.js') }}" ></script>
+
+  <script type = "text/javascript" 
+         src = "{{ url_for('static', filename = '/vendor/bootstrap/js/bootstrap.bundle.min.js') }}" ></script>
+
+</body>
+
+</html>
