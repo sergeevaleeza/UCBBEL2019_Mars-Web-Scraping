@@ -1,0 +1,9 @@
+Flask==3.1.1
+Flask-PyMongo==3.0.1
+pymongo==4.13.2
+requests==2.32.4
+beautifulsoup4==4.13.4
+lxml==6.0.0
+pandas==2.3.1
+selenium==4.34.2
+webdriver-manager==4.0.2
