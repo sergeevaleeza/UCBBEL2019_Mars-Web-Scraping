@@ -4,15 +4,15 @@ from flask_pymongo import PyMongo
 from scrape_mars_updated import scrape_all
 from dotenv import load_dotenv
 
-#load_dotenv()  # Load variables from .env
+load_dotenv()  # Load variables from .env
 
 app = Flask(__name__)
 
 # Set up MongoDB configuration
 #app.config["MONGO_URI"] = "mongodb://localhost:27017/mars_app"
-#app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
-MONGO_URI = os.getenv("MONGO_URI")
-app.config["MONGO_URI"] = MONGO_URI
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+#MONGO_URI = os.getenv("MONGO_URI")
+#app.config["MONGO_URI"] = MONGO_URI
 
 mongo = PyMongo(app)
 
