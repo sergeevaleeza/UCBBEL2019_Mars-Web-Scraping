@@ -2,6 +2,9 @@ import os
 from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 from scrape_mars_updated import scrape_all
+from dotenv import load_dotenv
+
+load_dotenv()  # Load variables from .env
 
 app = Flask(__name__)
 
