@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 from scrape_mars_updated import scrape_all
@@ -5,7 +6,8 @@ from scrape_mars_updated import scrape_all
 app = Flask(__name__)
 
 # Set up MongoDB configuration
-app.config["MONGO_URI"] = "mongodb://localhost:27017/mars_app"
+#app.config["MONGO_URI"] = "mongodb://localhost:27017/mars_app"
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 
 @app.route("/")
@@ -23,6 +25,10 @@ def scrape():
     
 #    print("Scraped Data:\n", mars_data)  # Debug output to verify
     return redirect("/", code=302)
+
+@app.route("/healthz")
+def health():
+    return "OK", 200
 
 if __name__ == "__main__":
     app.run(debug=True)
