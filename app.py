@@ -4,7 +4,8 @@ from flask_pymongo import PyMongo
 from scrape_mars_updated import scrape_all
 from dotenv import load_dotenv
 
-load_dotenv()  # Load variables from .env
+# Load .env from the secret file path
+load_dotenv('/etc/secrets/.env')
 
 app = Flask(__name__)
 
