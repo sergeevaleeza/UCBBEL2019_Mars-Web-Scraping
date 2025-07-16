@@ -8,6 +8,94 @@
     <style>
         .card { margin-bottom: 20px; }
         iframe { width: 100%; border: none; height: 800px; }
+        
+      * {box-sizing:border-box}
+
+      /* Slideshow container */
+      .slideshow-container {
+        max-width: 1000px;
+        position: relative;
+        margin: auto;
+      }
+
+      /* Hide the images by default */
+      .mySlides {
+        display: none;
+      }
+
+      /* Next & previous buttons */
+      .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -22px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      /* Position the "next button" to the right */
+      .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+      }
+
+      /* On hover, add a black background color with a little bit see-through */
+      .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.8);
+      }
+
+      /* Caption text */
+      .text {
+        color: #f2f2f2;
+        font-size: 15px;
+        padding: 8px 12px;
+        position: absolute;
+        bottom: 8px;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Number text (1/3 etc) */
+      .numbertext {
+        color: #f2f2f2;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+      }
+
+      /* The dots/bullets/indicators */
+      .dot {
+        cursor: pointer;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+      }
+
+      .active, .dot:hover {
+        background-color: #717171;
+      }
+
+      /* Fading animation */
+      .fade {
+        animation-name: fade;
+        animation-duration: 6.5s;
+      }
+
+      @keyframes fade {
+        from {opacity: .7}
+        to {opacity: 1}
+      }
     </style>
 </head>
 <body>
@@ -48,26 +136,58 @@
 
         <!-- Featured Image and Mars Facts -->
         <div class="row">
-            <!-- Featured Mars Image -->
-            <div class="col-md-6">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Featured Mars Image</h5>
-                        <img src="{{ mars_data.featured_image_url }}" class="img-fluid" alt="Featured Mars Image">
-                        <p class="mt-2"><a href="{{ mars_data.featured_image_url }}" target="_blank">See Full Image!</a></p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Mars Facts Table -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Mars Planet Profile</h5>
-                        {{ mars_data.mars_facts|safe }}
+          <!-- Mars Image Gallery -->
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Mars Image Gallery</h5>
+
+                <!-- Slideshow container -->
+                <div class="slideshow-container">
+                  {% for image in mars_data.mars_gallery %}
+                  <div class="mySlides fade" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                    <div class="numbertext">{{ loop.index }} / {{ mars_data.mars_gallery | length }}</div>
+
+                    <a href="{{ image.full_img_url }}" target="_blank">
+                      <img src="{{ image.full_img_url }}"
+                          alt="Mars image"
+                          style="width:100%; height:400px; object-fit:contain; background-color:#e0e0e0; border:2px dashed gray;"
+                          onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=Image+Unavailable';">
+                    </a>
+
+                    <!-- Caption box below the image -->
+                    <div style="background-color: #f8f8f8; padding: 8px; border-top: 1px solid #ddd; margin-top: 10px; font-size: 14px; color: #333;">
+                      {{ image.title }}
                     </div>
+                  </div>
+                  {% endfor %}
+
+                  <!-- Navigation arrows -->
+                  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                  <a class="next" onclick="plusSlides(1)">&#10095;</a>
                 </div>
+
+                <!-- Dot navigation -->
+                <div style="text-align:center; margin-top: 10px;">
+                  {% for image in mars_data.mars_gallery %}
+                  <span class="dot" onclick="currentSlide({{ loop.index }})"></span>
+                  {% endfor %}
+                </div>
+              </div>
             </div>
+          </div>
+          
+          <!-- Mars Facts Table -->
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Mars Planet Profile</h5>
+                {{ mars_data.mars_facts | safe }}
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Embedded Hemisphere Map -->
@@ -86,5 +206,48 @@
             </div>
         </div>
     </div>
+
+    <script>
+      let slideIndex = 0;
+
+      document.addEventListener('DOMContentLoaded', function() {
+        showSlides();
+      });
+
+      // Next/previous controls
+      function plusSlides(n) {
+        slideIndex += n - 1;
+        showSlides();
+      }
+
+      // Thumbnail image controls
+      function currentSlide(n) {
+        slideIndex = n - 1;
+        showSlides();
+      }
+
+      function showSlides() {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+
+        for (i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";
+        }
+
+        slideIndex++;
+        if (slideIndex > slides.length) {slideIndex = 1}
+
+        for (i = 0; i < dots.length; i++) {
+          dots[i].className = dots[i].className.replace(" active", "");
+        }
+
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+
+        // Automatically change slides every 6.5 seconds
+        setTimeout(showSlides, 6500);
+      }
+    </script>
 </body>
 </html>

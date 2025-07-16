@@ -26,16 +26,6 @@ def scrape_all():
     except Exception as e:
         print("Failed to load NASA Mars News:", e)
 
-    # ========== Featured Image ========== #
-    try:
-        image_url = "https://www.jpl.nasa.gov/images?search=&category=Mars"
-        response = requests.get(image_url)
-        soup = bs(response.text, "html.parser")
-        image_tag = soup.find("img", class_="BaseImage")
-        mars_data["featured_image_url"] = image_tag["src"] if image_tag else None
-    except Exception as e:
-        print("Failed to load featured image:", e)
-
     # ========== Curiosity Rover Update ========== #
     try:
         rover_url = "https://science.nasa.gov/mission/msl-curiosity/science-updates/"
@@ -79,35 +69,40 @@ def scrape_all():
         gallery_url = "https://science.nasa.gov/gallery/mars/"
         base_url = "https://science.nasa.gov"
         response = requests.get(gallery_url)
+        response.raise_for_status()
         soup = bs(response.text, "html.parser")
 
         gallery_data = []
-        gallery_items = soup.find_all("a", class_="hds-gallery-item-link hds-gallery-image-link")
+        items = soup.find_all("div", class_="hds-gallery-item-single hds-gallery-image")
 
-        for item in gallery_items[:10]:  # Limit to first 10 for performance
+        for item in items[:10]:  # Limit for performance
+            a_tag = item.find("a", class_="hds-gallery-item-link hds-gallery-image-link")
+            detail_url = a_tag["href"]
             caption = item.find("div", class_="hds-gallery-item-caption hds-gallery-image-caption").get_text(strip=True)
-            thumb_url = item.find("img")["src"]
-            detail_page = item["href"]
+            thumb_url = a_tag.find("img")["src"]
 
-            if not detail_page.startswith("http"):
-                detail_page = base_url + detail_page
+            if not detail_url.startswith("http"):
+                detail_url = base_url + detail_url
 
+            # Visit the detail page to get high-res image
+            full_img_url = None
             try:
-                detail_res = requests.get(detail_page)
-                detail_soup = bs(detail_res.text, "html.parser")
-                full_img_tag = detail_soup.find("img", class_="media_feature_image")
-                if full_img_tag:
-                    full_img_url = full_img_tag["src"]
-                else:
-                    # Fallback: look for a high-res anchor
-                    full_img_url = detail_soup.find("a", string="Download JPG")["href"]
-            except:
-                full_img_url = None
+                detail_response = requests.get(detail_url)
+                detail_response.raise_for_status()
+                detail_soup = bs(detail_response.text, "html.parser")
+
+                download_section = detail_soup.find("div", class_="hds-attachment-single__buttons")
+                download_link_tag = download_section.find("a", class_="hds-button-download") if download_section else None
+
+                if download_link_tag and download_link_tag.get("href"):
+                    full_img_url = download_link_tag["href"]
+            except Exception as e:
+                print(f"Failed to get full image from {detail_url}: {e}")
 
             gallery_data.append({
                 "title": caption,
                 "thumb_url": thumb_url,
-                "full_img_url": full_img_url
+                "full_img_url": full_img_url or thumb_url  # fallback
             })
             time.sleep(0.5)
 

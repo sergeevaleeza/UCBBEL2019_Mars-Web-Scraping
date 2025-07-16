@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 # Load .env from the secret file path
 load_dotenv('/etc/secrets/.env')
+# load_dotenv('.env')
 
 app = Flask(__name__)
 
