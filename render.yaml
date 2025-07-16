@@ -1,0 +1,6 @@
+build:
+  commands:
+    - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o chrome.deb
+    - apt update && apt install -y ./chrome.deb
+
+start: gunicorn app:app
