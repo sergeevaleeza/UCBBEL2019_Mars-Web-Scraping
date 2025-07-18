@@ -27,13 +27,20 @@ This interactive web application provides the latest insights and discoveries fr
 pip install -r requirements.txt
 ```
 
-3. Run the Flask application:
+3. Ensure MongoDB is running:
+
+```bash
+sudo systemctl enable mongod
+sudo systemctl start mongod
+```
+
+4. Run the Flask application:
 
 ```bash
 python app.py
 ```
 
-4. Access the web app locally at `http://localhost:5000`
+5. Access the web app locally at `http://localhost:5000`
 
 ## Future Improvements
 
