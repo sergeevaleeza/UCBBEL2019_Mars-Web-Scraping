@@ -8,3 +8,7 @@ pandas==2.3.1
 gunicorn==23.0.0
 python-dotenv==1.1.1
 webdriver-manager==4.0.2
+threading
+time
+requests
+datetime
