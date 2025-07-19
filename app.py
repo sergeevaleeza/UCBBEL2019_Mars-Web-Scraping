@@ -4,6 +4,12 @@ from flask_pymongo import PyMongo
 from scrape_mars_updated import scrape_all
 from dotenv import load_dotenv
 
+# for self-ping
+import threading
+import time
+import requests
+from datetime import datetime
+
 # Load .env from the secret file path
 load_dotenv('/etc/secrets/.env')
 # load_dotenv('.env')
@@ -17,6 +23,16 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 #app.config["MONGO_URI"] = MONGO_URI
 
 mongo = PyMongo(app)
+
+def self_ping():
+    """Ping the app every 14 minutes to prevent sleeping"""
+    while True:
+        try:
+            time.sleep(14 * 60)  # Wait 14 minutes
+            response = requests.get('https://mars-info-web-scraping.onrender.com/')
+            print(f"Self-ping successful at {datetime.now()}: {response.status_code}")
+        except Exception as e:
+            print(f"Self-ping failed at {datetime.now()}: {e}")
 
 @app.route("/")
 def index():
@@ -38,5 +54,12 @@ def scrape():
 def health():
     return "OK", 200
 
+@app.route('/health')
+def health_check():
+    return {'status': 'healthy', 'timestamp': datetime.now().isoformat()}
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    ping_thread = threading.Thread(target=self_ping, daemon=True)
+    ping_thread.start()
+    
+    app.run(host='0.0.0.0', port=10000, debug=True)  # Your existing Flask run code
